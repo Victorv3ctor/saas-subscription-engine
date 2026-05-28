@@ -165,7 +165,7 @@ class Service:
         hashed_data_pwd = bcrypt.hashpw(data_password.encode('utf-8'), bcrypt.gensalt())
         str_hashed_data_pwd = hashed_data_pwd.decode('utf-8')
         user = User.create(data_username, str_hashed_data_pwd, data_email)
-        return self.repo.save_user(user)
+        self.repo.save_user(user)
 
 
     def check_user_credentials(self, data_username, data_pwd):
