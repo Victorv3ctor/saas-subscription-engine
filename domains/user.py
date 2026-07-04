@@ -11,6 +11,9 @@ class User:
     def create(cls, username, pwd, email):
         return cls(username, pwd, email)
 
+    def __str__(self):
+        return str({self.user_id, self.username, self.pwd, self.email})
+
 
 
 

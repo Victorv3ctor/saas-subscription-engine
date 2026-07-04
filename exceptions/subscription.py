@@ -1,12 +1,9 @@
 class InvalidSubscriptionPlan(Exception):
-    pass
+    detail='New subscription plan must be different'
 
-class SubscriptionDurationExceeded(Exception):
-    pass
-
-class NoSubscription(Exception):
+class SubscriptionNotFound(Exception):
     pass
 
 
 class ActiveSubscription(Exception):
-    pass
+    detail='YOU HAVE ACTIVE SUBSCRIPTION'

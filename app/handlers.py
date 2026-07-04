@@ -4,10 +4,11 @@ from exceptions.user import UsernameNotFound, WrongPassword, UsernameExists, Ema
 
 from exceptions.subscription import (
     InvalidSubscriptionPlan,
-    SubscriptionDurationExceeded, NoSubscription,
+    SubscriptionNotFound,
     ActiveSubscription)
 
-#USER HANDLERS
+from exceptions.invoice import InvoiceNotFound, WrongInvoiceStatus
+
 def register_exception_handlers(app):
 
     @app.exception_handler(UsernameExists)
@@ -57,7 +58,7 @@ def subscription_exceptions_handler(app):
         return JSONResponse(
             status_code=409,
             content = {
-                'detail': 'YOUR SUBSCRIPTION IS ACTIVE'
+                'detail': exc_obj.detail
             }
         )
 
@@ -65,21 +66,10 @@ def subscription_exceptions_handler(app):
     def handle_invalid_subscription_plan(req_obj, exc_obj):
         return JSONResponse(
             status_code=404,
-            content = {
-                'detail': 'CHOOSE LOW/MEDIUM/PRO PLAN'
-            }
+            content = {'detail':exc_obj.detail}
         )
 
-    @app.exception_handler(SubscriptionDurationExceeded)
-    def handle_subscription_duration(request_obj, exc_obj):
-        return JSONResponse(
-            status_code = 404,
-            content = {
-                'detail': 'CHOOSE SUB DURATION(DAYS): 7/14/31/364'
-            }
-        )
-
-    @app.exception_handler(NoSubscription)
+    @app.exception_handler(SubscriptionNotFound)
     def handle_no_subscription(req_obj, exc_obj):
         return JSONResponse(
             status_code = 404,
@@ -88,6 +78,26 @@ def subscription_exceptions_handler(app):
             }
         )
 
+def invoice_exceptions_handler(app):
+    @app.exception_handler(InvoiceNotFound)
+    def handle_invoice_not_found(req_obj, exc_obj):
+        return JSONResponse(
+            status_code=404,
+            content={'detail':exc_obj.detail}
+        )
+
+    @app.exception_handler(WrongInvoiceStatus)
+    def handle_invoice_wrong_status(req_obj, exc_obj):
+        return JSONResponse(
+            status_code=400,
+            content={'detail':exc_obj.detail}
+        )
+
+def exception_handlers(app):
+    invoice_exceptions_handler(app)
+    subscription_exceptions_handler(app)
+    register_exception_handlers(app)
+    login_in_exception_handler(app)
 
 
 
